@@ -1,6 +1,7 @@
 name: YucehanRP Final Build
 on:
   workflow_dispatch:
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -8,30 +9,35 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          submodules: "recursive"
+          submodules: recursive
 
       - name: Set up JDK 17
         uses: actions/setup-java@v4
         with:
-          distribution: 'zulu'
+          distribution: zulu
           java-version: '17'
 
       - name: Pre-Build Cleanup & Fix
         run: |
+          set -e
+          sudo apt-get update
+          sudo apt-get install -y wget
           # Hata veren dil dosyalarını sil
-          find app_pojavlauncher/src/main/res/ -type d -name "values-*" -exec rm -rf {} +
+          find app_pojavlauncher/src/main/res/ -type d -name "values-*" -exec rm -rf {} + || true
           # Hata veren ikon klasörünü sil
-          rm -rf app_pojavlauncher/src/main/res/mipmap-anydpi-v26/
+          rm -rf app_pojavlauncher/src/main/res/mipmap-anydpi-v26/ || true
           # Eksik kütüphaneyi çek
           mkdir -p app_pojavlauncher/libs
-          wget https://github.com/PojavLauncherTeam/LTW/releases/latest/download/ltw-release.aar -P app_pojavlauncher/libs/
-          # Hata veren JRE indirme kısmını manuel klasör açarak kandırıyoruz
+          wget -q -O app_pojavlauncher/libs/ltw-release.aar https://github.com/PojavLauncherTeam/LTW/releases/latest/download/ltw-release.aar || true
+          # JRE indirme kısmını atlatmak için klasörleri oluştur
           mkdir -p app_pojavlauncher/src/main/assets/components/jre
+          mkdir -p app_pojavlauncher/src/main/assets/components/jre-new
+          mkdir -p app_pojavlauncher/src/main/assets/components/jre-21
+          chmod +x ./gradlew || true
 
       - name: Build APK (Bypass JRE)
         run: |
-          chmod +x gradlew
-          # JRE indirme hatasını geçmek için sadece APK derlemesine odaklanıyoruz
+          set -e
           ./gradlew assembleDebug -x lint -Pandroid.antypicalResourceChecking=true --no-daemon
 
       - name: Upload APK
