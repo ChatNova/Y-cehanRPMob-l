@@ -50,10 +50,13 @@ public class MainMenuFragment extends Fragment {
         Button mPlayButton = view.findViewById(R.id.play_button);
         mVersionSpinner = view.findViewById(R.id.mc_version_spinner);
 
-        // YucehanRP: Discord butonu linkini strings.xml'den veya direkt buradan ayarla
-        mDiscordButton.setOnClickListener(v -> Tools.openURL(requireActivity(), "https://discord.gg/YUCEHAN_LINKIN"));
+        // --- YUCEHAN RP ÖZEL AYARLAR ---
+        // Discord Butonu: Sizin davet linkiniz
+        mDiscordButton.setOnClickListener(v -> Tools.openURL(requireActivity(), "https://discord.gg/B5ChHenCDu"));
         
-        mNewsButton.setOnClickListener(v -> Tools.openURL(requireActivity(), "https://yucehanrp.com"));
+        // Haberler Butonu: Sizin Gamer.gd siteniz
+        mNewsButton.setOnClickListener(v -> Tools.openURL(requireActivity(), "https://yucehanrp.gamer.gd"));
+        
         mCustomControlButton.setOnClickListener(v -> startActivity(new Intent(requireContext(), CustomControlsActivity.class)));
         mInstallJarButton.setOnClickListener(v -> runInstallerWithConfirmation(false));
         
@@ -61,10 +64,10 @@ public class MainMenuFragment extends Fragment {
 
         // --- SERT KILIT VE OTOMATIK BAGLANTI ---
         mPlayButton.setOnClickListener(v -> {
-            // Sunucu IP'sini buraya yaz. Oyuncu girince direkt bu IP'ye bağlanır.
+            // Sunucu IP adresi
             LauncherPreferences.PREF_FAST_AUTOMATIC_RECONNECT = "yucehanrp.duckdns.org"; 
             ExtraCore.setValue(ExtraConstants.LAUNCH_GAME, true);
-            Toast.makeText(requireContext(), "YücehanRP'ye Bağlanılıyor...", Toast.LENGTH_SHORT).show();
+            Toast.makeText(requireContext(), "YücehanRP Dünyasına Bağlanılıyor...", Toast.LENGTH_SHORT).show();
         });
         // ---------------------------------------
 
